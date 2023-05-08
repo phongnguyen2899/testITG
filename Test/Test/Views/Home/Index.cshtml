@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Vattu>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<table>
+    <tr>
+        <td>Số phiếu </td>
+        <td><input id="sp" type="text" name="txtId" /></td>
+    </tr>
+    <tr>
+        <td>Ngày lập phiếu </td>
+        <td><input id="nlp" type="date" name="txtName" /></td>
+    </tr>
+    <tr>
+        <td>Tên vật tư</td>
+        <td><input id="tvt" type="text" name="chkAddon" /></td>
+    </tr>
+    <tr>
+        <td>ĐVT</td>
+        <td><input id="dvt" type="text" name="chkAddon" /></td>
+    </tr>
+    <tr>
+        <td>Số lượng nhập</td>
+        <td><input id="sln" type="number" name="chkAddon" /></td>
+    </tr>
+    <tr>
+        <td>Số lượng xuất</td>
+        <td><input id="slx" type="number" name="chkAddon" /></td>
+    </tr>
+    <tr>
+        <td colspan="2"><input id="Add" onclick="AddData()" type="submit" value="Thêm dữ liệu" /></td>
+        <td colspan="2"><input id="Clear" type="button" value="Xóa dữ liệu" /></td>
+    </tr>
+</table>
+
+<h3>Danh Sach</h3>
+<table>
+    <tr>
+        <td>Số phiếu</td>
+        <td>Ngày lập phiếu</td>
+        <td>Tên vật tư</td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.so_phieu</td>
+            <td>@item.ngay_lap_phieu</td>
+            <td>@item.ten_vt</td>
+            <td>
+                <button onclick="DeleteData(@item.ma_vt,@item.so_phieu)">Xoa</button>
+            </td>
+        </tr>
+    }
+</table>
+
+<script>
+    function AddData(){
+        var sp = $('#sp').val();
+        var nlp = $('#nlp').val();
+        var tvt = $('#tvt').val();
+        var dvt = $('#dvt').val();
+        var sln = $('#sln').val();
+        var slx = $('#slx').val();
+        var vattu = {
+            so_phieu:sp,
+            ngay_lap_phieu:nlp,
+            ma_vt:33,
+            ten_vt:tvt,
+            dvt:dvt,
+            sl_nhap:sln,
+            sl_xuat:slx,
+        };
+        $.ajax({
+            type: "POST",
+            url: '/Home/Add',
+            contentType: "application/json",
+            data : JSON.stringify(vattu),
+            dataType: "json",
+            success: function(recData) { alert(recData.msg); },
+            error: function() { alert('A error'); }
+        });
+    }
+
+    function DeleteData(mavt,sophieu){
+        let text = "Bạn có chắc chắn muốn xóa dữ liệu";
+          if (confirm(text) == true) {
+            $.ajax({
+                type: "POST",
+                url: '/Home/Delete',
+                contentType: "application/json",
+                data : JSON.stringify({
+                    mavt:mavt,
+                    sophieu:sophieu
+                }),
+                dataType: "json",
+                success: function(recData) { alert(recData.msg); },
+                error: function() { alert('A error'); }
+            });
+          }
+    }
+</script>

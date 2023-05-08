@@ -1,0 +1,49 @@
+﻿CREATE DATABASE testitg;
+use testitg;
+
+CREATE TABLE chitiet_nhapxuat (
+    so_phieu  varchar(255) NOT NULL,
+    ngay_lap_phieu date,
+    ma_vt varchar(255),
+    ten_vt varchar(255),
+    dvt varchar(255),
+    sl_nhap float,
+    sl_xuat float
+);
+ALTER TABLE chitiet_nhapxuat
+ADD PRIMARY KEY (so_phieu,ma_vt);
+
+insert into chitiet_nhapxuat value('PN-001','2011-03-13','IP13', 'Iphone 13' 'Chiếc', 10,null);
+
+DELIMITER $$
+CREATE PROCEDURE `ct_nhapxuat_theongay`(IN pngay_lap_phieu date)
+    BEGIN
+        select * from chitiet_nhapxuat where ngay_lap_phieu = pngay_lap_phieu;
+    END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE `ds_toncuoi_vt`()
+    BEGIN
+        select ma_vt, ten_vt, dvt, (sl_nhap-sl_xuat) as ton_cuoi from chitiet_nhapxuat where sl_nhap-sl_xuat>0 or sl_nhap-sl_xuat is not null;
+    END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE `add_ct_nx`(
+	IN pso_phieu date,
+    IN pngay_lap_phieu date,
+    IN pma_vt date,
+    IN pten_vt date,
+    IN pdvt date,
+    IN psl_nhap date
+)
+    BEGIN
+        INSERT INTO `testitg`.`chitiet_nhapxuat` (`so_phieu`, `ngay_lap_phieu`, `ma_vt`, `ten_vt`, `dvt`, `sl_nhap`) 
+        VALUES (pso_phieu, pngay_lap_phieu, pma_vt, pten_vt, pdvt, psl_nhap);
+    END
+$$
+DELIMITER ;
+
